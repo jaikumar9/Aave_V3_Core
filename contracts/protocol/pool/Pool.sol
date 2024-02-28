@@ -48,8 +48,68 @@ contract Pool is VersionedInitializable, PoolStorage, IPool  {
 /**
    * @dev Only pool configurator can call functions marked by this modifier.
    */
+   
+   modifier onlyPoolConfigurator() {
+    _onlyPoolConfigurator();
+    _;
+  }
 
+   /**
+   * @dev Only pool admin can call functions marked by this modifier.
+   */
+  modifier onlyPoolAdmin() {
+    _onlyPoolAdmin();
+    _;
+  }
   
+/**
+   * @dev Only bridge can call functions marked by this modifier.
+   */
+  modifier onlyBridge() {
+    _onlyBridge();
+    _;
+  }
+
+
+  function _onlyPoolConfigurator() internal view virtual {
+    require(
+      ADDRESSES_PROVIDER.getPoolConfigurator() == msg.sender,
+      Errors.CALLER_NOT_POOL_CONFIGURATOR
+    );
+  }
+  
+  function _onlyPoolAdmin() internal view virtual {
+    require(
+      IACLManager(ADDRESSES_PROVIDER.getACLManager()).isPoolAdmin(msg.sender),
+      Errors.CALLER_NOT_POOL_ADMIN
+    );
+  }
+
+  function _onlyBridge() internal view virtual {
+    require(
+      IACLManager(ADDRESSES_PROVIDER.getACLManager()).isBridge(msg.sender),
+      Errors.CALLER_NOT_BRIDGE
+    );
+  }
+
+  function getRevision() internal pure virtual override returns (uint256) {
+    return POOL_REVISION;
+  }
+
+  /**
+   * @dev Constructor.
+   * @param provider The address of the PoolAddressesProvider contract
+   */
+
+constructor(IPoolAddressesProvider provider) {
+    ADDRESSES_PROVIDER = provider;
+  }
+
+
+
+
+
+
 
 
 
