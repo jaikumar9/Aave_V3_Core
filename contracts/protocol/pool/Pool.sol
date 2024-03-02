@@ -124,8 +124,21 @@ constructor(IPoolAddressesProvider provider) {
     );
   }
 
+function backUnbacked(
+    address asset,
+    uint256 amount,
+    uint256 fee
+  ) external virtual override onlyBridge returns (uint256) {
+    return
+      BridgeLogic.executeBackUnbacked(_reserves[asset], asset, amount, fee, _bridgeProtocolFee);
+  }
 
-
+function supply(address asset,uint256 amount,address onBehalfOf,uint16 referralCode) public virtual override {
+    SupplyLogic.executeSupply( _reserves,_reservesList, _usersConfig[onBehalfOf],
+      DataTypes.ExecuteSupplyParams({asset: asset,amount: amount,onBehalfOf: onBehalfOf,referralCode: referralCode
+      })
+    );
+  }
 
 
 
