@@ -70,9 +70,7 @@ library ValidationLogic {
   ) internal view {
     require(amount != 0, Errors.INVALID_AMOUNT);
 
-    (bool isActive, bool isFrozen, , , bool isPaused) = reserveCache
-      .reserveConfiguration
-      .getFlags();
+    (bool isActive, bool isFrozen, , , bool isPaused) = reserveCache.reserveConfiguration.getFlags();
     require(isActive, Errors.RESERVE_INACTIVE);
     require(!isPaused, Errors.RESERVE_PAUSED);
     require(!isFrozen, Errors.RESERVE_FROZEN);

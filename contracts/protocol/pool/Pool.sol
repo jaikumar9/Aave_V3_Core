@@ -140,6 +140,31 @@ function supply(address asset,uint256 amount,address onBehalfOf,uint16 referralC
     );
   }
 
+  function supplyWithPermit(
+    address asset,uint256 amount,address onBehalfOf,uint16 referralCode,uint256 deadline,uint8 permitV,bytes32 permitR,bytes32 permitS
+  ) public virtual override {
+    IERC20WithPermit(asset).permit(
+      msg.sender,
+      address(this),
+      amount,
+      deadline,
+      permitV,
+      permitR,
+      permitS
+    );
+    SupplyLogic.executeSupply(
+      _reserves,
+      _reservesList,
+      _usersConfig[onBehalfOf],
+      DataTypes.ExecuteSupplyParams({
+        asset: asset,
+        amount: amount,
+        onBehalfOf: onBehalfOf,
+        referralCode: referralCode
+      })
+    );
+  }
+
 
 
 }
