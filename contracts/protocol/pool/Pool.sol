@@ -141,7 +141,14 @@ function supply(address asset,uint256 amount,address onBehalfOf,uint16 referralC
   }
 
   function supplyWithPermit(
-    address asset,uint256 amount,address onBehalfOf,uint16 referralCode,uint256 deadline,uint8 permitV,bytes32 permitR,bytes32 permitS
+    address asset,
+    uint256 amount,
+    address onBehalfOf,
+    uint16 referralCode,
+    uint256 deadline,
+    uint8 permitV,
+    bytes32 permitR,
+    bytes32 permitS
   ) public virtual override {
     IERC20WithPermit(asset).permit(
       msg.sender,
@@ -163,6 +170,30 @@ function supply(address asset,uint256 amount,address onBehalfOf,uint16 referralC
         referralCode: referralCode
       })
     );
+  }
+
+/// @inheritdoc IPool
+
+  function withdraw(
+    address asset,
+    uint256 amount,
+    address to
+  ) public virtual override returns (uint256) {
+    return
+      SupplyLogic.executeWithdraw(
+        _reserves,
+        _reservesList,
+        _eModeCategories,
+        _usersConfig[msg.sender],
+        DataTypes.ExecuteWithdrawParams({
+          asset: asset,
+          amount: amount,
+          to: to,
+          reservesCount: _reservesCount,
+          oracle: ADDRESSES_PROVIDER.getPriceOracle(),
+          userEModeCategory: _usersEModeCategory[msg.sender]
+        })
+      );
   }
 
 
