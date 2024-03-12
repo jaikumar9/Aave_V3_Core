@@ -117,7 +117,7 @@ library SupplyLogic {
 
     uint256 amountToWithdraw = params.amount;
 
-    if (params.amount == type(uint256).max) {
+    if (params.amount == type(uint256).max) {    //Checking For the Maximum Possible Amount
       amountToWithdraw = userBalance;
     }
 

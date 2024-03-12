@@ -140,7 +140,7 @@ function supply(address asset,uint256 amount,address onBehalfOf,uint16 referralC
     );
   }
 
-  function supplyWithPermit(
+  function supplyWithPermit(        // With Allowance user can Supply with permit there tokens
     address asset,
     uint256 amount,
     address onBehalfOf,
