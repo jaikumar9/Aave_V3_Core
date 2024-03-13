@@ -196,6 +196,36 @@ function supply(address asset,uint256 amount,address onBehalfOf,uint16 referralC
       );
   }
 
+  /// @inheritdoc IPool
+  function borrow(
+    address asset,
+    uint256 amount,
+    uint256 interestRateMode,
+    uint16 referralCode,
+    address onBehalfOf
+  ) public virtual override {
+    BorrowLogic.executeBorrow(
+      _reserves,
+      _reservesList,
+      _eModeCategories,
+      _usersConfig[onBehalfOf],
+      DataTypes.ExecuteBorrowParams({
+        asset: asset,
+        user: msg.sender,
+        onBehalfOf: onBehalfOf,
+        amount: amount,
+        interestRateMode: DataTypes.InterestRateMode(interestRateMode),
+        referralCode: referralCode,
+        releaseUnderlying: true,
+        maxStableRateBorrowSizePercent: _maxStableRateBorrowSizePercent,
+        reservesCount: _reservesCount,
+        oracle: ADDRESSES_PROVIDER.getPriceOracle(),
+        userEModeCategory: _usersEModeCategory[onBehalfOf],
+        priceOracleSentinel: ADDRESSES_PROVIDER.getPriceOracleSentinel()
+      })
+    );
+  }
+
 
 
 }
