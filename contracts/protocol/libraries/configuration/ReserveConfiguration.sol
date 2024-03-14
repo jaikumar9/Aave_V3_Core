@@ -553,7 +553,7 @@ library ReserveConfiguration {
    * @return The state flag representing stableRateBorrowing enabled
    * @return The state flag representing paused
    */
-  function (
+  function getFlags(
     DataTypes.ReserveConfigurationMap memory self
   ) internal pure returns (bool, bool, bool, bool, bool) {
     uint256 dataLocal = self.data;
