@@ -199,6 +199,9 @@ library ValidationLogic {
         Errors.ASSET_NOT_BORROWABLE_IN_ISOLATION
       );
 
+// A validation to ensure that the asset being borrowed is allowed in isolation mode and 
+// that the total exposure (debt) does not exceed the collateral debt ceiling.
+
       require(
         reservesData[params.isolationModeCollateralAddress].isolationModeTotalDebt +
           (params.amount /
