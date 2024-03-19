@@ -283,6 +283,7 @@ library ValidationLogic {
         !params.userConfig.isUsingAsCollateral(reservesData[params.asset].id) ||
           params.reserveCache.reserveConfiguration.getLtv() == 0 ||
           params.amount > IERC20(params.reserveCache.aTokenAddress).balanceOf(params.userAddress),
+            //borrowing amount does not exceed their available token balance in the ERC20 token contract
         Errors.COLLATERAL_SAME_AS_BORROWING_CURRENCY
       );
 

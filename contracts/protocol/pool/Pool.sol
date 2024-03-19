@@ -225,6 +225,28 @@ function supply(address asset,uint256 amount,address onBehalfOf,uint16 referralC
       })
     );
   }
+  
+  /// @inheritdoc IPool
+  function repay(
+    address asset,
+    uint256 amount,
+    uint256 interestRateMode,
+    address onBehalfOf
+  ) public virtual override returns (uint256) {
+    return
+      BorrowLogic.executeRepay(
+        _reserves,
+        _reservesList,
+        _usersConfig[onBehalfOf],
+        DataTypes.ExecuteRepayParams({
+          asset: asset,
+          amount: amount,
+          interestRateMode: DataTypes.InterestRateMode(interestRateMode),
+          onBehalfOf: onBehalfOf,
+          useATokens: false
+        })
+      );
+  }
 
 
 

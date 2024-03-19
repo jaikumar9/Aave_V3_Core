@@ -61,7 +61,7 @@ library GenericLogic {
    * @return The health factor of the user
    * @return True if the ltv is zero, false otherwise
    */
-  function calculateUserAccountData(
+  function calculateUserAccountData(   // Get the Users Account helth data, So we decide if we can liquidate or not to give the loan
     mapping(address => DataTypes.ReserveData) storage reservesData,
     mapping(uint256 => address) storage reservesList,
     mapping(uint8 => DataTypes.EModeCategory) storage eModeCategories,
