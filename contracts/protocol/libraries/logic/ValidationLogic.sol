@@ -321,7 +321,7 @@ library ValidationLogic {
    * @param stableDebt The borrow balance of the user
    * @param variableDebt The borrow balance of the user
    */
-  function validateRepay(
+  function validateRepay(     // It 
     DataTypes.ReserveCache memory reserveCache,
     uint256 amountSent,
     DataTypes.InterestRateMode interestRateMode,
@@ -329,7 +329,7 @@ library ValidationLogic {
     uint256 stableDebt,
     uint256 variableDebt
   ) internal view {
-    require(amountSent != 0, Errors.INVALID_AMOUNT);
+    require(amountSent != 0, Errors.INVALID_AMOUNT); // aMOUNT SHOULD NOT BE ZERO
     require(
       amountSent != type(uint256).max || msg.sender == onBehalfOf,
       Errors.NO_EXPLICIT_AMOUNT_TO_REPAY_ON_BEHALF
