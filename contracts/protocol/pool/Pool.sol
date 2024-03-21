@@ -282,6 +282,37 @@ function supply(address asset,uint256 amount,address onBehalfOf,uint16 referralC
     }
   }
 
+ /// @inheritdoc IPool
+function repayWithATokens(
+    address asset,
+    uint256 amount,
+    uint256 interestRateMode
+  ) public virtual override returns (uint256) {
+    return
+      BorrowLogic.executeRepay(
+        _reserves,
+        _reservesList,
+        _usersConfig[msg.sender],
+        DataTypes.ExecuteRepayParams({
+          asset: asset,
+          amount: amount,
+          interestRateMode: DataTypes.InterestRateMode(interestRateMode),
+          onBehalfOf: msg.sender,
+          useATokens: true
+        })
+      );
+  }
+
+
+/// @inheritdoc IPool
+  function swapBorrowRateMode(address asset, uint256 interestRateMode) public virtual override {
+    BorrowLogic.executeSwapBorrowRateMode(
+      _reserves[asset],
+      _usersConfig[msg.sender],
+      asset,
+      DataTypes.InterestRateMode(interestRateMode)
+    );
+  }
 
 
 
