@@ -315,6 +315,10 @@ function repayWithATokens(
   }
 
 
+ /// @inheritdoc IPool
+  function rebalanceStableBorrowRate(address asset, address user) public virtual override {
+    BorrowLogic.executeRebalanceStableBorrowRate(_reserves[asset], asset, user);
+  }
 
 
 

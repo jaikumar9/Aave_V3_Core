@@ -355,7 +355,7 @@ library ValidationLogic {
    * @param variableDebt The variable debt of the user
    * @param currentRateMode The rate mode of the debt being swapped
    */
-  function validateSwapRateMode(
+  function validateSwapRateMode( // Validation on swaping of Stable to Variable and vice versa
     DataTypes.ReserveData storage reserve,
     DataTypes.ReserveCache memory reserveCache,
     DataTypes.UserConfigurationMap storage userConfig,
