@@ -333,6 +333,7 @@ library BorrowLogic {
         reserveCache.stableDebtTokenAddress
       ).burn(msg.sender, stableDebt);
 
+
       (, reserveCache.nextScaledVariableDebt) = IVariableDebtToken(
         reserveCache.variableDebtTokenAddress
       ).mint(msg.sender, msg.sender, stableDebt, reserveCache.nextVariableBorrowIndex);

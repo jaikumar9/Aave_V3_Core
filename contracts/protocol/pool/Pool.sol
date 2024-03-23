@@ -322,4 +322,51 @@ function repayWithATokens(
 
 
 
+  /// @inheritdoc IPool
+  function setUserUseReserveAsCollateral(
+    address asset,
+    bool useAsCollateral
+  ) public virtual override {
+    SupplyLogic.executeUseReserveAsCollateral(
+      _reserves,
+      _reservesList,
+      _eModeCategories,
+      _usersConfig[msg.sender],
+      asset,
+      useAsCollateral,
+      _reservesCount,
+      ADDRESSES_PROVIDER.getPriceOracle(),
+      _usersEModeCategory[msg.sender]
+    );
+  }
+
+/// @inheritdoc IPool
+  function liquidationCall(
+    address collateralAsset,
+    address debtAsset,
+    address user,
+    uint256 debtToCover,
+    bool receiveAToken
+  ) public virtual override {
+    LiquidationLogic.executeLiquidationCall(
+      _reserves,
+      _reservesList,
+      _usersConfig,
+      _eModeCategories,
+      DataTypes.ExecuteLiquidationCallParams({
+        reservesCount: _reservesCount,
+        debtToCover: debtToCover,
+        collateralAsset: collateralAsset,
+        debtAsset: debtAsset,
+        user: user,
+        receiveAToken: receiveAToken,
+        priceOracle: ADDRESSES_PROVIDER.getPriceOracle(),
+        userEModeCategory: _usersEModeCategory[user],
+        priceOracleSentinel: ADDRESSES_PROVIDER.getPriceOracleSentinel()
+      })
+    );
+  }
+
+
+
 }
