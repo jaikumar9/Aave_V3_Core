@@ -39,7 +39,7 @@ import {PoolStorage} from './PoolStorage.sol';
  */
 
 
-contract Pool is VersionedInitializable, PoolStorage, IPool  {
+contract  Pool is VersionedInitializable, PoolStorage, IPool  {
   using ReserveLogic for DataTypes.ReserveData;
 
   uint256 public constant POOL_REVISION = 0x1;
@@ -408,9 +408,114 @@ function repayWithATokens(
   }
 
 
+ /// @inheritdoc IPool
+  function flashLoanSimple(
+    address receiverAddress,
+    address asset,
+    uint256 amount,
+    bytes calldata params,
+    uint16 referralCode
+  ) public virtual override {
+    DataTypes.FlashloanSimpleParams memory flashParams = DataTypes.FlashloanSimpleParams({
+      receiverAddress: receiverAddress,
+      asset: asset,
+      amount: amount,
+      params: params,
+      referralCode: referralCode,
+      flashLoanPremiumToProtocol: _flashLoanPremiumToProtocol,
+      flashLoanPremiumTotal: _flashLoanPremiumTotal
+    });
+    FlashLoanLogic.executeFlashLoanSimple(_reserves[asset], flashParams);
+  }
 
 
+  /// @inheritdoc IPool
+  function mintToTreasury(address[] calldata assets) external virtual override {
+    PoolLogic.executeMintToTreasury(_reserves, assets);
+  }
 
+/// @inheritdoc IPool
+  function getReserveData(
+    address asset
+  ) external view virtual override returns (DataTypes.ReserveData memory) {
+    return _reserves[asset];
+  }
+
+
+/// @inheritdoc IPool
+  function getUserAccountData(
+    address user
+  )
+    external
+    view
+    virtual
+    override
+    returns (
+      uint256 totalCollateralBase,
+      uint256 totalDebtBase,
+      uint256 availableBorrowsBase,
+      uint256 currentLiquidationThreshold,
+      uint256 ltv,
+      uint256 healthFactor
+    )
+  {
+    return
+      PoolLogic.executeGetUserAccountData(
+        _reserves,
+        _reservesList,
+        _eModeCategories,
+        DataTypes.CalculateUserAccountDataParams({
+          userConfig: _usersConfig[user],
+          reservesCount: _reservesCount,
+          user: user,
+          oracle: ADDRESSES_PROVIDER.getPriceOracle(),
+          userEModeCategory: _usersEModeCategory[user]
+        })
+      );
+  }
+
+/// @inheritdoc IPool
+  function getConfiguration(
+    address asset
+  ) external view virtual override returns (DataTypes.ReserveConfigurationMap memory) {
+    return _reserves[asset].configuration;
+  }
+
+  /// @inheritdoc IPool
+  function getReserveNormalizedIncome(
+    address asset
+  ) external view virtual override returns (uint256) {
+    return _reserves[asset].getNormalizedIncome();
+  }
+  
+  /// @inheritdoc IPool
+  function getReserveNormalizedVariableDebt(
+    address asset
+  ) external view virtual override returns (uint256) {
+    return _reserves[asset].getNormalizedDebt();
+  }
+
+
+ /// @inheritdoc IPool
+  function getReservesList() external view virtual override returns (address[] memory) {
+    uint256 reservesListCount = _reservesCount;
+    uint256 droppedReservesCount = 0;
+    address[] memory reservesList = new address[](reservesListCount);
+
+    for (uint256 i = 0; i < reservesListCount; i++) {
+      if (_reservesList[i] != address(0)) {
+        reservesList[i - droppedReservesCount] = _reservesList[i];
+      } else {
+        droppedReservesCount++;
+      }
+    }
+
+    // Reduces the length of the reserves array by `droppedReservesCount`
+    assembly {
+      mstore(reservesList, sub(reservesListCount, droppedReservesCount))
+    }
+    return reservesList;
+  }
 
 
 }
